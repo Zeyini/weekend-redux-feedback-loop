@@ -5,6 +5,30 @@ const pool = require('../modules/pool')
 
 // TODO: This route adds a new feedback entry
 router.post('/', (req, res) => {
+const feedbackData = req.body
+console.log('feedback data being sent to DB',feedbackData);
+const sqlText = `
+INSERT INTO "feedback" 
+("feeling", "understanding", "support", "comments")
+VALUES ($1, $2, $3, $4);
+`
+const sqlValues = [
+    feedbackData.feeling,
+    feedbackData.understanding,
+    feedbackData.supported,
+    feedbackData.comments
+]
+
+pool.query(sqlText,sqlValues)
+
+.then((DBresponse) => {
+    res.sendStatus(201)
+})
+
+.catch((DBerror) => {
+    console.log('err ADDING FEEDBACK',DBerror );
+    res.sendStatus(500);
+});
 
 })
 
